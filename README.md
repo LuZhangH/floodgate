@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![Travis build
+status](https://travis-ci.com/LuZhangH/floodgate.svg?branch=master)](https://travis-ci.com/LuZhangH/floodgate)
 <!-- badges: end -->
 
 The goal of floodgate is to …
