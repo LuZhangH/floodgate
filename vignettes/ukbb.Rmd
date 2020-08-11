@@ -1,0 +1,22 @@
+---
+title: "Apply Floodgate to the UKBB Data"
+author: "Lu Zhang (lu_zhang@g.harvard.edu)"
+date: "r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: bibliography.bib
+vignette: >
+  %\VignetteIndexEntry{Apply Floodgate to the UKBB Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(floodgate)
+```
