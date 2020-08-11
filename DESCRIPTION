@@ -24,7 +24,9 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    covr
+    covr,
+    spelling
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr
+Language: en-US
