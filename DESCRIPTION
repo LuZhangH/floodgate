@@ -14,6 +14,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Suggests: 
     MASS,
+    stats,
     methods,
     glmnet,
     lars,
@@ -26,7 +27,9 @@ Suggests:
     rmarkdown,
     covr,
     spelling
+Imports:
+  SNPknock
 Depends: 
-    R (>= 2.10)
+     R (>= 3.5.0)
 VignetteBuilder: knitr
 Language: en-US
