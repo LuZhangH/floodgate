@@ -1,4 +1,22 @@
 #### calculate the mMSEgap value
+#' Compute the mMSE gap value
+#
+#' This function computes the mMSE gap value.
+#'
+#' @param beta a p-dimensional vector, true regression coefficients.
+#' @param Xmodel model of the covaraites (default: "gaussian").
+#' @param Ydist the type of conditional model.
+#' @param sigma_X.list a list of length p, with each element being the variance of the conditional distribution.
+#' @param X a n by p matrix, containing all the covariates.
+#' @param nulls.list a list of length p, whose element is a (|i2|*K)-dimensional vector, which contains
+#' K set of null samples.
+#' @return A vector of p, with each element being the value of I for a given covariate.
+#'
+#' @family utils
+#'
+#' @details TBD
+#'
+#' @references TBD
 #' @export
 compute.mMSEgap <- function(beta, Xmodel = "gaussian", Ydist = "gaussian",
                        sigma_X.list = NULL, X = NULL, nulls.list = NULL ){
@@ -37,16 +55,16 @@ compute.mMSEgap <- function(beta, Xmodel = "gaussian", Ydist = "gaussian",
     n = nrow(X)
     K = (dim(nulls.list[[1]])[1])/n
     mu_Xk = vector(mode = "list", length = J)
-    if(Ydist == "poisson"){
-      for(j in 1:J){
-        Gj = S_star[j]
-        common_part = as.vector(X[,-Gj]%*%beta[-Gj]) ## n-dim vector
-        common_part = rep(common_part, K)  ## (Kn)-dim vector
-        change_part = as.vector(nulls.list[[j]]*beta[Gj]) ## (Kn)-dim vector
-        sum_part = common_part + change_part ## (Kn)-dim vector
-        mu_Xk[[j]] = matrix(logpos.mean(exp(sum_part)),nrow = n, ncol = K)
-      }
-    }
+    # if(Ydist == "poisson"){
+    #   for(j in 1:J){
+    #     Gj = S_star[j]
+    #     common_part = as.vector(X[,-Gj]%*%beta[-Gj]) ## n-dim vector
+    #     common_part = rep(common_part, K)  ## (Kn)-dim vector
+    #     change_part = as.vector(nulls.list[[j]]*beta[Gj]) ## (Kn)-dim vector
+    #     sum_part = common_part + change_part ## (Kn)-dim vector
+    #     mu_Xk[[j]] = matrix(logpos.mean(exp(sum_part)),nrow = n, ncol = K)
+    #   }
+    # }
     if(Ydist == "binom"){
       for(j in 1:J){
         Gj = S_star[j]
@@ -67,13 +85,12 @@ compute.mMSEgap <- function(beta, Xmodel = "gaussian", Ydist = "gaussian",
   return(nonpara.target = nonpara.target) ### p dimensional vector
 }
 
-#' @export
-logpos.mean <- function(lambda){
-  ### lambda is a vector
-  t_seq = 0:(5*round(max(lambda)))
-  t_seq_expand = rep(t_seq,length(lambda))
-  lambda_expand = rep(lambda, each = length(t_seq))
-  tmp = log(1+t_seq_expand)*(lambda_expand^(t_seq_expand))/factorial(t_seq_expand)*exp(-lambda_expand)
-  val = colSums(matrix(tmp, ncol = length(lambda), byrow =  FALSE),na.rm = TRUE)
-  return(val)
-}
+# logpos.mean <- function(lambda){
+#   ### lambda is a vector
+#   t_seq = 0:(5*round(max(lambda)))
+#   t_seq_expand = rep(t_seq,length(lambda))
+#   lambda_expand = rep(lambda, each = length(t_seq))
+#   tmp = log(1+t_seq_expand)*(lambda_expand^(t_seq_expand))/factorial(t_seq_expand)*exp(-lambda_expand)
+#   val = colSums(matrix(tmp, ncol = length(lambda), byrow =  FALSE),na.rm = TRUE)
+#   return(val)
+# }

@@ -1,3 +1,33 @@
+#' Infer the model-free variable importance, MACM gap for binary responsess via floodgate
+#
+#' This function infers the model-free variable importance, MACM gap for binary responses via floodgate.
+#'
+#' @param X a n by p matrix, containing all the covariates.
+#' @param Y a n by 1 matrix, containing the response variables.
+#' @param i1 the index of training samples.
+#' @param i2 the index of inference samples.
+#' @param M_n the number of Monte Carlo samples for E(mu(X)|X-j).
+#' @param nulls.list a list of length p, whose element is a (|i2|*(K))-dimensional vector, which contains
+#' K set of null samples.
+#' @param gamma_X.list a list of length p, with each element being the linear coefficient of
+#' the given covariate on the other covariates (only relevant when Xmodel = "gaussian"; default: NULL).
+#' @param sigma_X.list a list of length p, with each element being the variance of the conditional distribution.
+#' @param Xmodel model of the covaraites (default: "gaussian").
+#' @param funs a list of three: train.fun, active.fun and predict.fun.
+#' @param algo a fitting algorithm (default: "lasso").
+#' @param cv.rule indicates which rule should be used for the predict function, either "min" (the usual rule) or "1se" (the one-standard- error rule); default: "min").
+#' See the glmnet help files for details.
+#' @param one.sided whether to obtain LCB or p-values via the one-sided way (default: TRUE).
+#' @param alevel confidence level (defaul: 0.05).
+#' @param test type of the hypothesis test (defaul: "z").
+#' @param verbose whether to show intermediate progress (default: FALSE).
+#' @return A list of three objects.
+#' inf.out: a matrix of |S|-by-4, containing the p-values, LCI, UCI and the floodgate LCB for variable in S;
+#' S: a list of selected variables;
+#' cpu.time: computing time.
+#' @family methods
+#'
+#' @details TBD
 #' @export
 floodgate.binary <- function(X, Y, i1, i2, M_n = M_n,
                              nulls.list = NULL, gamma_X.list = NULL, sigma_X.list = NULL,
@@ -73,15 +103,35 @@ floodgate.binary <- function(X, Y, i1, i2, M_n = M_n,
   ## mu_Xk[[j]] : n2*K matrix or n2*1 matrix (when linear)
 
 
-  fg.out = fg.inference.binary(mu_X = mu_X, mu_Xk = mu_Xk, Y = Y[i2,], S = S, M_n = ifelse(useMC == TRUE, M_n, NULL),
-                               alevel = alevel, verbose = verbose, test = test, one.sided = one.sided)
+  fg.out = fg.inference.binary(S = S, mu_X = mu_X, mu_Xk = mu_Xk, Y = Y[i2,], M_n = ifelse(useMC == TRUE, M_n, NULL),
+                               one.sided = one.sided, alevel = alevel, test = test, verbose = verbose)
 
   fg.out$cpu.time = (proc.time() - begin.fg)[3]
   return(fg.out = fg.out)
 }
 
+#' Core procedure of floodgate
+#
+#' This function produces floodgate LCBs for given fitted mu.
+#'
+#' @param S a list of selected variables.
+#' @param mu_X a list of kength |S|, whose element is the matrix of mu(X) with dimension n2-by-1.
+#' @param mu_Xk a list of kength |S|, whose element is the matrix of mu(Xk) with dimension n2-by-K or n2-by-1.
+#' @param Y a n2 by 1 matrix, containing the response variables of the inferene samples.
+#' @param M_n the number of Monte Carlo samples for E(mu(X)|X-j).
+#' @param one.sided whether to obtain LCB or p-values via the one-sided way (default: TRUE).
+#' @param alevel confidence level (defaul: 0.05).
+#' @param test type of the hypothesis test (defaul: "z").
+#' @param verbose whether to show intermediate progress (default: FALSE).
+#' @return A list of three objects.
+#' inf.out: a matrix of |S|-by-4, containing the p-values, LCI, UCI and the floodgate LCB for variable in S;
+#' S: a list of selected variables.
+#'
+#' @family methods
+#'
+#' @details TBD
 #' @export
-fg.inference.binary <- function(mu_X, mu_Xk, Y, S, M_n = NULL, alevel = 0.05, verbose = TRUE, test = "z", one.sided = TRUE){
+fg.inference.binary <- function(S, mu_X, mu_Xk, Y, M_n = NULL, one.sided = TRUE, alevel = 0.05, test = "z", verbose = TRUE){
   ### Y: n2-dim vector
   ### mu_X: \mu evaluated at X,  n2*1
   ### mu_Xk: \mu evaluated at X_tilde then averaged over all K multiple samples

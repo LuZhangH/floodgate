@@ -8,14 +8,14 @@ This function generates response variables Y under a given conditional model.}
 gen.Y(X, beta, Ydist = "gaussian")
 }
 \arguments{
-\item{X}{a n by p matrix, containing all the covariates}
+\item{X}{a n by p matrix, containing all the covariates.}
 
-\item{beta}{a p-dimensional vector, true regression coefficients}
+\item{beta}{a p-dimensional vector, true regression coefficients.}
 
-\item{Ydist}{the type of conditional model}
+\item{Ydist}{the type of conditional model.}
 }
 \value{
-A matrix of size n-by-1 containing the response variables
+A matrix of size n-by-1 containing the response variables.
 }
 \description{
 Generate response variables
@@ -25,10 +25,15 @@ This function generates response variables Y under a given conditional model.
 There are four choices of the conditional model:
 use "gaussian" to specify a linear model with gaussian noises,
 use "laplace" to specify a linear model with laplacian noises,
-use "binom" to specifiy a logistic model, with Y taking values in \{-1,1\}
-use "poisson" to specify a log-poisson model
+use "binom" to specifiy a logistic model, with Y taking values in \{-1,1\},
+use "poisson" to specify a log-poisson model.
 }
 \references{
 TBD
 }
-\concept{gen}
+\seealso{
+Other models: 
+\code{\link{Genotypes.parm}()},
+\code{\link{HMM.parm}()}
+}
+\concept{models}

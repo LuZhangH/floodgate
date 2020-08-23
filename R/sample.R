@@ -5,6 +5,26 @@
 ###########################################################
 
 #### generate null variables for Gaussian X model
+#' Generate null samples for multivariate Gaussian covariates
+#
+#' This function generates null samples of a given subset of variables for multivariate Gaussian covariates.
+#'
+#' @param X a n by p matrix, containing all the covariates.
+#' @param S a subset of covariates, for which null samples are constructed.
+#' @param K number of null replicates.
+#' @param gamma_X.list_S a list of length |S|, with each element being the linear coefficient of
+#' the given covariate on the other covariates.
+#' @param sigma_X.list_S a list of length |S|, with each element being the variance of the conditional distribution.
+#' @param verbose whether to show intermediate progress (default: FALSE).
+#' @return A list of length |S|, with each element being a (n*K)-dimensional vector, which contains
+#' K set of null samples.
+#'
+#' @family sampling
+#'
+#' @details TBD
+#'
+#' @references TBD
+#'
 #' @import stats
 #' @export
 sample.gaussian.nulls <- function(X, S, K, gamma_X.list_S, sigma_X.list_S, verbose = FALSE){
@@ -53,6 +73,27 @@ sample.gaussian.nulls <- function(X, S, K, gamma_X.list_S, sigma_X.list_S, verbo
 }
 
 #### generate null variables for Gaussian copula X model
+#' Generate null samples for Gaussian copula covariates
+#
+#' This function generates null samples of a given subset of variables for Gaussian copula covariates.
+#'
+#' @param X a n by p matrix, containing the Gaussian vectors before applying the probability integral transform
+#' @param S a subset of covariates, for which null samples are constructed.
+#' @param K number of null replicates.
+#' @param gamma_X.list_S a list of length |S|, with each element being the linear coefficient of
+#' the given covariate on the other covariates (before the probability integral transform).
+#' @param sigma_X.list_S a list of length |S|, with each element being the variance of the conditional distribution
+#' (before the probability integral transform).
+#' @param verbose whether to show intermediate progress (default: FALSE).
+#' @return A list of length |S|, with each element being a (n*K)-dimensional vector, which contains
+#' K set of null samples.
+#'
+#' @family sampling
+#'
+#' @details TBD
+#'
+#' @references TBD
+#'
 #' @import stats
 #' @export
 sample.g_copula.nulls <- function(X, S, K, gamma_X.list_S, sigma_X.list_S, verbose = FALSE){
@@ -85,18 +126,6 @@ sample.g_copula.nulls <- function(X, S, K, gamma_X.list_S, sigma_X.list_S, verbo
       ### nulls.list_S[[j]]: (Kn)*1 matrix
       ### with patterns: K=1,1:n; K=2,1:n; K=3,1:n .......
     }
-  } else {
-    for(j in 1:J){
-      Gj = S[[j]]
-      Lj = length(Gj)
-      gamma_X = gamma_X.list_S[[j]] ## (p - Lj)* Lj
-      sigma_X = sigma_X.list_S[[j]] ##  Lj * Lj
-      ### already vectorized, to be double checked
-      proj_X = X[, -Gj] %*% gamma_X ## n*(p-Lj) %*% (p-Lj)*Lj = n * Lj
-      ### (Kn)*Lj + (Kn)*Lj
-      nulls.list_S[[j]] = MASS::mvrnorm(n*K, rep(0, Lj), sigma_X) + proj_X[rep(1:n, K),]
-      ### nulls.list_S[[j]]: (Kn)*Lj matrix
-    }
   }
 
   return(nulls.list_S = nulls.list_S)
@@ -104,6 +133,28 @@ sample.g_copula.nulls <- function(X, S, K, gamma_X.list_S, sigma_X.list_S, verbo
 
 
 #### generate null variables for Gaussian X model via co-sufficient sampling
+#' Generate null samples for multivariate Gaussian covariates via co-sufficient sampling
+#
+#' This function generates co-sufficient null samples of a given subset of variables for multivariate Gaussian covariates.
+#'
+#' @param X a n by p matrix, containing all the covariates.
+#' @param i2 index of inference samples
+#' @param n21 number of batches, and the batch size will be |i2|/n21
+#' @param S a subset of covariates, for which null samples are constructed.
+#' @param K number of null replicates.
+#' @param sigma_X.list_S a list of length |S|, with each element being the variance of the conditional distribution.
+#' @param verbose whether to show intermediate progress (default: FALSE).
+#' @return A list of three objects.
+#' nulls.list_S: a list of length |S| whose element is a (|i2|*K)-dimensional vector, which contains
+#' K set of null samples;
+#' cosuf.X_proj.list: a list of length |S| whose element is E(Xij|X-ij,Tm) for i in the m-th batch;
+#' cosuf.sigma_X.list:a list of length |S| whose element is Var(Xij|X-ij,Tm).
+#'
+#' @family sampling
+#'
+#' @details TBD
+#'
+#' @references TBD
 #' @import stats
 #' @export
 cosuff.gaussian.nulls <- function(X, i2, n21, S, K, sigma_X.list_S, verbose = FALSE){
@@ -154,6 +205,25 @@ cosuff.gaussian.nulls <- function(X, i2, n21, S, K, sigma_X.list_S, verbose = FA
 
 
 ###################
+#' Generate null samples for Gaussian copula covariates via co-sufficient sampling
+#
+#' This function generates co-sufficient null samples of a given subset of variables for Gaussian copula covariates.
+#'
+#' @param X a n by p matrix, containing all the covariates.
+#' @param i2 index of inference samples
+#' @param n21 number of batches, and the batch size will be |i2|/n21
+#' @param S a subset of covariates, for which null samples are constructed.
+#' @param K number of null replicates.
+#' @param sigma_X.list_S a list of length |S|, with each element being the variance of the conditional distribution of the multivariate Gaussian.
+#' @param verbose whether to show intermediate progress (default: FALSE).
+#' @return nulls.list_S: a list of length |S| whose element is a (|i2|*K)-dimensional vector, which contains
+#' K set of null samples.
+#'
+#' @family sampling
+#'
+#' @details TBD
+#'
+#' @references TBD
 #' @import stats
 #' @export
 cosuff.g_copula.nulls <- function(X, i2, n21, S, K, sigma_X.list_S, verbose = FALSE){

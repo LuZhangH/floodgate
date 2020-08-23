@@ -8,19 +8,19 @@
 #
 #' This function generates response variables Y under a given conditional model.
 #'
-#' @param X a n by p matrix, containing all the covariates
-#' @param beta a p-dimensional vector, true regression coefficients
-#' @param Ydist the type of conditional model
-#' @return A matrix of size n-by-1 containing the response variables
+#' @param X a n by p matrix, containing all the covariates.
+#' @param beta a p-dimensional vector, true regression coefficients.
+#' @param Ydist the type of conditional model.
+#' @return A matrix of size n-by-1 containing the response variables.
 #'
-#' @family gen
+#' @family models
 #'
 #' @details
 #' There are four choices of the conditional model:
 #' use "gaussian" to specify a linear model with gaussian noises,
 #' use "laplace" to specify a linear model with laplacian noises,
-#' use "binom" to specifiy a logistic model, with Y taking values in \{-1,1\}
-#' use "poisson" to specify a log-poisson model
+#' use "binom" to specifiy a logistic model, with Y taking values in \{-1,1\},
+#' use "poisson" to specify a log-poisson model.
 #'
 #' @references TBD
 #'
@@ -53,15 +53,24 @@ gen.Y <- function(X, beta, Ydist = "gaussian"){
 ##
 ###########################################################
 
-#### obtain HMM parameters from a randomly generated HMM model
+#' Obtain model parameters from a randomly generated HMM
+#'
+#' This function obtains model parameters from a randomly generated hidden Markov model
+#'
+#' @param p number of nodes
+#' @param K_st number of hidden states
+#' @param M number of emission states
+#' @return A list containing pInit: a vector of K_st, which gives the marginal probabilities of the first variable;
+#' Q: an array of size (p-1, K_st, K_st), which gives the p-1 transition matrices of the hidden Markov chain;
+#' pEmit: an array of size (p, M, K_st), which is the emission probability matrix.
+#'
+#' @family models
+#'
+#' @details TBD
+
+#' @references TBD
 #' @export
 HMM.parm <- function(p, K_st, M){
-### p: number of nodes
-### K_st: number of hidden states
-### M: number of emission states
-### pInit: K_st vector
-### Q: (p-1) * K_st * K_st array
-### pEmit: p * M * K_st array
 
   pInit = rep(1/K_st, K_st)
   Q = array(stats::runif((p-1)*K_st*K_st), c(p-1,K_st,K_st))
@@ -79,7 +88,20 @@ HMM.parm <- function(p, K_st, M){
 }
 
 
-#### obtain HMM parameters from a real genotype model
+#### obtain model parameters from a fastPHASE genotype model
+#' Obtain parameters from a fastPHASE genotype model
+#'
+#' This function obtains the HMM parameters from a fastPHASE genotype model
+#'
+#' @param p number of nodes
+#' @return A list containing pInit: a vector of K_st, which gives the marginal probabilities of the first variable;
+#' Q: an array of size (p-1, K_st, K_st), which gives the p-1 transition matrices of the hidden Markov chain;
+#' pEmit: an array of size (p, M, K_st), which is the emission probability matrix.
+#'
+#' @family models
+#'
+#' @details The first p variables also follow a HMM.
+#'
 #' @importFrom SNPknock loadHMM
 #' @export
 Genotypes.parm <- function(p){
