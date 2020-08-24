@@ -1,0 +1,13 @@
+templates:
+  params:
+    bootswatch: readable
+
+navbar:
+  title: "Floodgate"
+  right:
+    - text: "About"
+      icon: fa-user
+      href: https://github.com/LuZhangH
+    - text: "GitHub"
+      icon: fa-github
+      href: https://github.com/LuZhangH/floodgate
