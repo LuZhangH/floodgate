@@ -18,7 +18,7 @@
 #'
 #' @references TBD
 #' @export
-compute.mMSEgap <- function(beta, Xmodel = "gaussian", Ydist = "gaussian",
+compute.movi <- function(beta, Xmodel = "gaussian", Ydist = "gaussian",
                        sigma_X.list = NULL, X = NULL, nulls.list = NULL ){
 
   #### sqrt version for the target
@@ -94,3 +94,5 @@ compute.mMSEgap <- function(beta, Xmodel = "gaussian", Ydist = "gaussian",
 #   val = colSums(matrix(tmp, ncol = length(lambda), byrow =  FALSE),na.rm = TRUE)
 #   return(val)
 # }
+
+

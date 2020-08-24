@@ -1,10 +1,8 @@
 ---
-title: "Basic Usage of Floodgate"
-author: "Lu Zhang (lu_zhang@g.harvard.edu)"
+title: "Illustration of Floodgate for the MACM Gap"
 output: rmarkdown::html_vignette
-bibliography: bibliography.bib
 vignette: >
-  %\VignetteIndexEntry{Basic Usage of Floodgate}
+  %\VignetteIndexEntry{Illustration of Floodgate for the MACM Gap}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 # Setup 
-```{r setup, message=FALSE}
+```{r setup, echo=FALSE}
 set.seed(2020)
 ## load required packages
 library(floodgate)
@@ -38,12 +36,15 @@ p = 1000 # covariate dimension
 Xmodel = "gaussian" # covariate distribution
 rho = 0.3 # auto-correlation coefficient
 
-Ydist = "gaussian" # conditional model of response
+Ydist = "binom" # conditional model of response
 s = 20 # number of non-nulls
 amplitude = 5 # signal amplitude value
 
+
 split.prop = 0.5 # splitting proportion
-K = 500 # number of null replicates
+K = 100
+M_n = 400 # number of null replicates for esimating the conditional mean of mu(X)
+K_all = K + M_n # number of total null replicates
 alevel = 0.05 # confidence level
 ```
 
@@ -64,20 +65,20 @@ X = matrix(rnorm(n*p),n,p)%*% Sigma.chol
 Y = gen.Y(X, beta, Ydist = Ydist)
 ```
 
-
 # Sample null covariates and compute variable importance measures
 ```{r}
 ## sample null covariates 
-nulls.list = sample.gaussian.nulls(X = X, S = as.list(1:p), K = K, gamma_X.list_S = gamma_X.list, 
-                                   sigma_X.list_S = sigma_X.list)
+nulls.list = sample.gaussian.nulls(X = X, S = as.list(1:p), K = K_all, gamma_X.list_S = gamma_X.list,
+                                   sigma_X.list_S = sigma_X.list, verbose = TRUE)
+## compute MACMgap values
+MACMgap = compute.movi(beta = beta, Xmodel = Xmodel, Ydist = Ydist,
+                       sigma_X.list = NULL, X = X, nulls.list = nulls.list)
 
-## compute the mMSEgap values
-mMSEgap = compute.movi(beta = beta, Xmodel = Xmodel, Ydist = Ydist,
-                      sigma_X.list = sigma_X.list, nulls.list = nulls.list)
 
 ```
 
 # Run floodgate
+
 ```{r}
 ## sample splitting
 i1 = sample(1:n, floor(n*split.prop))
@@ -89,41 +90,40 @@ n2 = length(i2)
 algo = "lasso"
 funs = funs.list[[algo]]
 ## run floodgate to obtain LCBs
-fg.out = floodgate(X, Y, i1, i2, nulls.list = nulls.list,
+fg.out = floodgate.binary(X, Y, i1, i2, M_n = M_n, nulls.list = nulls.list,
                    gamma_X.list = gamma_X.list, sigma_X.list = sigma_X.list,
-                   Xmodel = Xmodel, funs, algo = algo,
+                   Xmodel = Xmodel, funs = funs, algo = algo,
                    alevel = alevel, verbose = TRUE)
-
-## extract output and produce plots
 inf.out = as.data.frame(fg.out$inf.out)
 S = unlist(fg.out$S)
-inf.out$mMSEgap = mMSEgap[S]
-ggplot(data = inf.out, aes(x = S, y = mMSEgap)) + 
-      ylim(0, max(inf.out$mMSEgap, inf.out$LCB) + 0.05) + 
-      ggtitle(paste0("algo = ", algo )) +
-      ylab("mMSEgap and LCB") + xlab("Selected variables") + 
+inf.out$MACMgap = MACMgap[S]
+
+ggplot(data = inf.out, aes(x = S, y = MACMgap)) + 
+      ylim(0, max(inf.out$MACMgap, inf.out$LCB) + 0.05) + 
+      ggtitle(paste0("algo = ", algo )) + 
+      ylab("MACMgap and LCB") + xlab("Selected variables") + 
       geom_point(color = "red", shape = 8) + 
-      geom_errorbar(aes(ymin=LCB, ymax=LCB), width = 15, color = "black") +
-      geom_segment(aes(x = S, y = LCB, xend = S, yend = mMSEgap),
-                    arrow = arrow(length = unit(0.15, "cm"), type = "closed"))
-## use SAM to estimate the conditional mean
-algo = "sam"
+      geom_errorbar(aes(ymin=LCB, ymax=LCB), width = 15, color = "black") + 
+      geom_segment(aes(x = S, y = LCB, xend = S, yend = MACMgap),
+                  arrow = arrow(length = unit(0.15, "cm"), type = "closed"))
+## use Binom_LASSO to estimate the conditional mean
+algo = "binom_lasso"
 funs = funs.list[[algo]]
 ## run floodgate to obtain LCBs
-fg.out = floodgate(X, Y, i1, i2, nulls.list = nulls.list,
+fg.out = floodgate.binary(X, Y, i1, i2, M_n = M_n, nulls.list = nulls.list,
                    gamma_X.list = gamma_X.list, sigma_X.list = sigma_X.list,
-                   Xmodel = Xmodel, funs, algo = algo,
+                   Xmodel = Xmodel, funs = funs, algo = algo,
                    alevel = alevel, verbose = TRUE)
 ## extract output and produce plots
 inf.out = as.data.frame(fg.out$inf.out)
 S = unlist(fg.out$S)
-inf.out$mMSEgap = mMSEgap[S]
-ggplot(data = inf.out, aes(x = S, y = mMSEgap)) + 
-      ylim(0, max(inf.out$mMSEgap, inf.out$LCB) + 0.05) + 
-      ggtitle(paste0("algo = ", algo )) +
-      ylab("mMSEgap and LCB") + xlab("Selected variables") + 
+inf.out$MACMgap = MACMgap[S]
+ggplot(data = inf.out, aes(x = S, y = MACMgap)) + 
+      ylim(0, max(inf.out$MACMgap, inf.out$LCB) + 0.05) + 
+      ggtitle(paste0("algo = ", algo )) + 
+      ylab("MACMgap and LCB") + xlab("Selected variables") + 
       geom_point(color = "red", shape = 8) + 
-      geom_errorbar(aes(ymin=LCB, ymax=LCB), width = 15, color = "black") +
-      geom_segment(aes(x = S, y = LCB, xend = S, yend = mMSEgap),
-                    arrow = arrow(length = unit(0.15, "cm"), type = "closed"))
+      geom_errorbar(aes(ymin=LCB, ymax=LCB), width = 15, color = "black") + 
+      geom_segment(aes(x = S, y = LCB, xend = S, yend = MACMgap),
+                  arrow = arrow(length = unit(0.15, "cm"), type = "closed"))
 ```

@@ -3,9 +3,9 @@
 \docType{data}
 \name{funs.list}
 \alias{funs.list}
-\title{A list of functions.}
+\title{A list of functions: fitting algorithms.}
 \format{
-An object of class \code{list} of length 6.
+An object of class \code{list} of length 9.
 }
 \usage{
 funs.list

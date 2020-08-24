@@ -102,17 +102,19 @@ floodgate.binary <- function(X, Y, i1, i2, M_n = M_n,
   ## mu_X: n2*1 matrix
   ## mu_Xk[[j]] : n2*K matrix or n2*1 matrix (when linear)
 
-
-  fg.out = fg.inference.binary(S = S, mu_X = mu_X, mu_Xk = mu_Xk, Y = Y[i2,], M_n = ifelse(useMC == TRUE, M_n, NULL),
+  if(useMC == FALSE){
+    M_n = NULL
+  }
+  fg.out = fg.inference.binary(S = S, mu_X = mu_X, mu_Xk = mu_Xk, Y = Y[i2,], M_n = M_n,
                                one.sided = one.sided, alevel = alevel, test = test, verbose = verbose)
 
   fg.out$cpu.time = (proc.time() - begin.fg)[3]
   return(fg.out = fg.out)
 }
 
-#' Core procedure of floodgate
+#' Core procedure of floodgate: binary responses
 #'
-#' This function produces floodgate LCBs for given fitted mu.
+#' This function produces floodgate LCBs with given fitted mu (under binary responses).
 #'
 #' @param S a list of selected variables.
 #' @param mu_X a list of kength |S|, whose element is the matrix of mu(X) with dimension n2-by-1.

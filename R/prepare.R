@@ -1,4 +1,4 @@
-#' A list of functions.
+#' A list of functions: fitting algorithms.
 #'
 #' A list of functions, which specify various fitting algorithms,
 #' including lasso, step, ridge,

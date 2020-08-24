@@ -54,6 +54,32 @@ my.rf.funs$predict.fun = function(out, newx){
 funs.list$rf_binary = my.rf.funs
 
 ## Sparse additive model
+## Sparse additive model
+my.predict.fix = function(object, newdata) {
+  gcinfo(FALSE)
+  out = list()
+  nt = nrow(newdata)
+  d = ncol(newdata)
+  X.min.rep = matrix(rep(object$X.min, nt), nrow = nt, byrow = T)
+  X.ran.rep = matrix(rep(object$X.ran, nt), nrow = nt, byrow = T)
+  newdata = (newdata - X.min.rep)/X.ran.rep
+  newdata = pmax(newdata, 0)
+  newdata = pmin(newdata, 1)
+  m = object$p * d
+  Zt = matrix(0, nt, m)
+  for (j in 1:d) {
+    tmp = (j - 1) * object$p + c(1:object$p)
+    unique.vals = unique(newdata[,j])
+    tmp.mat = ns(unique.vals, df = object$p,
+                 Boundary.knots = object$Boundary.knots[, j])
+    for (i in 1:nrow(newdata)) {
+      Zt[i, tmp] = tmp.mat[which(unique.vals==newdata[i,j]),]
+    }
+  }
+  out$values = cbind(Zt, rep(1, nt)) %*% rbind(object$w, object$intercept)
+  rm(Zt, newdata)
+  return(out)
+}
 my.predict.fix = function(object, newdata) {
   gcinfo(FALSE)
   out = list()

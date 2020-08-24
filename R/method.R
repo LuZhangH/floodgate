@@ -353,7 +353,7 @@ floodgate <- function(X, Y, i1, i2, nulls.list = NULL, gamma_X.list = NULL, sigm
     useMC = TRUE
     # nulls.list_S = nulls_list[S_unlist]
     mu_Xk = calulate.mu_Xk(X = X, i2 = i2, S = S, out = out,
-                           nulls.list_S = NULL, gamma_X.list_S = gamma_X.list[S_unlist],
+                           nulls.list_S = nulls.list[S_unlist], gamma_X.list_S = gamma_X.list[S_unlist],
                            useMC = useMC, Xmodel = Xmodel, algo = algo,
                            predict.fun = predict.fun, cv.rule = cv.rule, verbose = verbose)
     ## set V_mean = NULL
