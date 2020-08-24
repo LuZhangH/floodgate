@@ -7,3 +7,7 @@
 ^codecov\.yml$
 ^utils$
 
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^data-raw$

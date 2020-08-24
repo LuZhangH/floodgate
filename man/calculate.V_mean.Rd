@@ -2,8 +2,7 @@
 % Please edit documentation in R/method.R
 \name{calculate.V_mean}
 \alias{calculate.V_mean}
-\title{Calculate the expected conditional variance term
-This function calculates the expected conditional variance term Var(Xj |X-j)}
+\title{Calculate the expected conditional variance term}
 \usage{
 calculate.V_mean(
   S,
@@ -35,7 +34,6 @@ See the glmnet help files for details.}
 A vector of length |S|, whose element is the expected conditional variance term Var(Xj |X-j).
 }
 \description{
-Calculate the expected conditional variance term
 This function calculates the expected conditional variance term Var(Xj |X-j)
 }
 \details{

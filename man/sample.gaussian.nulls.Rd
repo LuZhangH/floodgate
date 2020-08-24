@@ -2,8 +2,7 @@
 % Please edit documentation in R/sample.R
 \name{sample.gaussian.nulls}
 \alias{sample.gaussian.nulls}
-\title{Generate null samples for multivariate Gaussian covariates
-This function generates null samples of a given subset of variables for multivariate Gaussian covariates.}
+\title{Generate null samples for multivariate Gaussian covariates}
 \usage{
 sample.gaussian.nulls(X, S, K, gamma_X.list_S, sigma_X.list_S, verbose = FALSE)
 }
@@ -26,7 +25,6 @@ A list of length |S|, with each element being a (n*K)-dimensional vector, which 
 K set of null samples.
 }
 \description{
-Generate null samples for multivariate Gaussian covariates
 This function generates null samples of a given subset of variables for multivariate Gaussian covariates.
 }
 \details{

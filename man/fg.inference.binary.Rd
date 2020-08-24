@@ -2,8 +2,7 @@
 % Please edit documentation in R/binary.R
 \name{fg.inference.binary}
 \alias{fg.inference.binary}
-\title{Core procedure of floodgate
-This function produces floodgate LCBs for given fitted mu.}
+\title{Core procedure of floodgate}
 \usage{
 fg.inference.binary(
   S,
@@ -42,7 +41,6 @@ inf.out: a matrix of |S|-by-4, containing the p-values, LCI, UCI and the floodga
 S: a list of selected variables.
 }
 \description{
-Core procedure of floodgate
 This function produces floodgate LCBs for given fitted mu.
 }
 \details{

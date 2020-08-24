@@ -2,8 +2,7 @@
 % Please edit documentation in R/method.R
 \name{floodgate}
 \alias{floodgate}
-\title{Infer the model-free variable importance, mMSE gap via floodgate
-This function infers the model-free variable importance, mMSE gap via floodgate.}
+\title{Infer the model-free variable importance, mMSE gap via floodgate}
 \usage{
 floodgate(
   X,
@@ -64,7 +63,6 @@ S: a list of selected variables;
 cpu.time: computing time.
 }
 \description{
-Infer the model-free variable importance, mMSE gap via floodgate
 This function infers the model-free variable importance, mMSE gap via floodgate.
 }
 \details{

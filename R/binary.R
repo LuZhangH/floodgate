@@ -1,5 +1,5 @@
 #' Infer the model-free variable importance, MACM gap for binary responsess via floodgate
-#
+#'
 #' This function infers the model-free variable importance, MACM gap for binary responses via floodgate.
 #'
 #' @param X a n by p matrix, containing all the covariates.
@@ -111,7 +111,7 @@ floodgate.binary <- function(X, Y, i1, i2, M_n = M_n,
 }
 
 #' Core procedure of floodgate
-#
+#'
 #' This function produces floodgate LCBs for given fitted mu.
 #'
 #' @param S a list of selected variables.

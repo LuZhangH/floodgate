@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{compute.mMSEgap}
 \alias{compute.mMSEgap}
-\title{Compute the mMSE gap value
-This function computes the mMSE gap value.}
+\title{Compute the mMSE gap value}
 \usage{
 compute.mMSEgap(
   beta,
@@ -32,7 +31,6 @@ K set of null samples.}
 A vector of p, with each element being the value of I for a given covariate.
 }
 \description{
-Compute the mMSE gap value
 This function computes the mMSE gap value.
 }
 \details{

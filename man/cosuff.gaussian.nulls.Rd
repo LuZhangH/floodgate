@@ -2,8 +2,7 @@
 % Please edit documentation in R/sample.R
 \name{cosuff.gaussian.nulls}
 \alias{cosuff.gaussian.nulls}
-\title{Generate null samples for multivariate Gaussian covariates via co-sufficient sampling
-This function generates co-sufficient null samples of a given subset of variables for multivariate Gaussian covariates.}
+\title{Generate null samples for multivariate Gaussian covariates via co-sufficient sampling}
 \usage{
 cosuff.gaussian.nulls(X, i2, n21, S, K, sigma_X.list_S, verbose = FALSE)
 }
@@ -30,7 +29,6 @@ cosuf.X_proj.list: a list of length |S| whose element is E(Xij|X-ij,Tm) for i in
 cosuf.sigma_X.list:a list of length |S| whose element is Var(Xij|X-ij,Tm).
 }
 \description{
-Generate null samples for multivariate Gaussian covariates via co-sufficient sampling
 This function generates co-sufficient null samples of a given subset of variables for multivariate Gaussian covariates.
 }
 \details{

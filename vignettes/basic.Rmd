@@ -1,0 +1,80 @@
+---
+title: "Basic Usage of Floodgate"
+author: "Lu Zhang (lu_zhang@g.harvard.edu)"
+output: rmarkdown::html_vignette
+bibliography: bibliography.bib
+vignette: >
+  %\VignetteIndexEntry{Basic Usage of Floodgate}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(floodgate)
+library(methods)
+library(conformalInference)
+library(glmnet)
+library(lars)
+library(randomForest)
+library(SAM)
+
+n = 1000
+p = 1000
+
+Xmodel = "gaussian"
+rho = 0.3
+
+Ydist = "gaussian"
+s = 10
+amplitude = 5
+
+split.prop = 0.5
+K = 500
+alevel = 0.05
+
+load(paste0("../inst/rho", rho, "_Sigma.RData"))
+load(paste0("../inst/rho", rho, "_X_paras_gaussian.RData"))
+
+S_star = sort(sample(1:p,s))
+beta = rep(0,p)
+beta[S_star] = sample(c(-1,1), s, replace = TRUE) * amplitude/sqrt(n)
+
+X = matrix(rnorm(n*p),n,p)%*% Sigma.chol
+Y = gen.Y(X, beta, Ydist = Ydist)
+
+nulls.list = sample.gaussian.nulls(X = X, S = as.list(1:p), K = K, gamma_X.list_S = gamma_X.list, sigma_X.list_S = sigma_X.list)
+
+mMSEgap = compute.mMSEgap(beta = beta, Xmodel = Xmodel, Ydist = Ydist,
+          sigma_X.list = sigma_X.list, nulls.list = nulls.list)
+
+i1 = sample(1:n, floor(n*split.prop))
+i2 = (1:n)[-i1]
+n1 = length(i1)
+n2 = length(i2)
+
+algo = "lasso"
+funs = funs.list[[algo]]
+fg.out = floodgate(X, Y, i1, i2, nulls.list = nulls.list, 
+                   gamma_X.list = gamma_X.list, sigma_X.list = sigma_X.list,
+                   Xmodel = Xmodel, funs, algo = algo,
+                   alevel = alevel, verbose = TRUE)
+inf.out = as.data.frame(fg.out$inf.out)
+S = unlist(fg.out$S)
+inf.out$mMSEgap = mMSEgap[S]
+library(ggplot2)
+ggplot(data = inf.out, aes(x = S, y = mMSEgap)) +  
+  ylim(0, max(inf.out$mMSEgap) + 0.05) + 
+  ylab("mMSEgap and LCB") + xlab("Selected variables") +
+    geom_point(colour = "red", shape = 8) + 
+  geom_errorbar(aes(ymin=LCB, ymax=LCB), width = 15) +
+  geom_segment(aes(x = S, y = LCB, xend = S, yend = mMSEgap),
+               arrow = arrow(length = unit(0.15, "cm"), type = "closed")
+                                                       )
+```

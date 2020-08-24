@@ -2,8 +2,7 @@
 % Please edit documentation in R/method.R
 \name{calulate.mu_Xk}
 \alias{calulate.mu_Xk}
-\title{Calculate mu(Xk) where Xk denotes the null sample
-This function calculates mu(Xk) for null replicates Xk.}
+\title{Calculate mu(Xk) where Xk denotes the null sample}
 \usage{
 calulate.mu_Xk(
   binary = FALSE,
@@ -56,7 +55,6 @@ See the glmnet help files for details.}
 A list of kength |S|, whose element is the matrix of mu(Xk) with dimension n2-by-K or n2-by-1.
 }
 \description{
-Calculate mu(Xk) where Xk denotes the null sample
 This function calculates mu(Xk) for null replicates Xk.
 }
 \details{

@@ -1,6 +1,6 @@
 #### calculate the mMSEgap value
 #' Compute the mMSE gap value
-#
+#'
 #' This function computes the mMSE gap value.
 #'
 #' @param beta a p-dimensional vector, true regression coefficients.

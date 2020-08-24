@@ -2,8 +2,7 @@
 % Please edit documentation in R/sample.R
 \name{cosuff.g_copula.nulls}
 \alias{cosuff.g_copula.nulls}
-\title{Generate null samples for Gaussian copula covariates via co-sufficient sampling
-This function generates co-sufficient null samples of a given subset of variables for Gaussian copula covariates.}
+\title{Generate null samples for Gaussian copula covariates via co-sufficient sampling}
 \usage{
 cosuff.g_copula.nulls(X, i2, n21, S, K, sigma_X.list_S, verbose = FALSE)
 }
@@ -27,7 +26,6 @@ nulls.list_S: a list of length |S| whose element is a (|i2|*K)-dimensional vecto
 K set of null samples.
 }
 \description{
-Generate null samples for Gaussian copula covariates via co-sufficient sampling
 This function generates co-sufficient null samples of a given subset of variables for Gaussian copula covariates.
 }
 \details{

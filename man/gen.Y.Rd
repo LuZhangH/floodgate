@@ -2,8 +2,7 @@
 % Please edit documentation in R/gen.R
 \name{gen.Y}
 \alias{gen.Y}
-\title{Generate response variables
-This function generates response variables Y under a given conditional model.}
+\title{Generate response variables}
 \usage{
 gen.Y(X, beta, Ydist = "gaussian")
 }
@@ -18,7 +17,6 @@ gen.Y(X, beta, Ydist = "gaussian")
 A matrix of size n-by-1 containing the response variables.
 }
 \description{
-Generate response variables
 This function generates response variables Y under a given conditional model.
 }
 \details{

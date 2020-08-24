@@ -2,8 +2,7 @@
 % Please edit documentation in R/method.R
 \name{inference_general}
 \alias{inference_general}
-\title{Obtain the floodgate LCB using the Delta method
-This function produces floodgate LCB using the Delta method.}
+\title{Obtain the floodgate LCB using the Delta method}
 \usage{
 inference_general(
   R,
@@ -31,7 +30,6 @@ inference_general(
 A vector of length 4: p-value, LCI, UCI and LCB.
 }
 \description{
-Obtain the floodgate LCB using the Delta method
 This function produces floodgate LCB using the Delta method.
 }
 \details{

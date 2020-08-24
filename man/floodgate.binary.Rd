@@ -2,8 +2,7 @@
 % Please edit documentation in R/binary.R
 \name{floodgate.binary}
 \alias{floodgate.binary}
-\title{Infer the model-free variable importance, MACM gap for binary responsess via floodgate
-This function infers the model-free variable importance, MACM gap for binary responses via floodgate.}
+\title{Infer the model-free variable importance, MACM gap for binary responsess via floodgate}
 \usage{
 floodgate.binary(
   X,
@@ -67,7 +66,6 @@ S: a list of selected variables;
 cpu.time: computing time.
 }
 \description{
-Infer the model-free variable importance, MACM gap for binary responsess via floodgate
 This function infers the model-free variable importance, MACM gap for binary responses via floodgate.
 }
 \details{

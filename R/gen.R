@@ -4,8 +4,8 @@
 ##
 ###########################################################
 
-#' Generate response variables
-#
+#'Generate response variables
+#'
 #' This function generates response variables Y under a given conditional model.
 #'
 #' @param X a n by p matrix, containing all the covariates.

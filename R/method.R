@@ -1,6 +1,6 @@
 #### fit a model to obtain the regression function estimator: mu
-#' Fit a model on the training data for a given alogorithm.
-#
+#' Fit a model on the training data for a given alogorithm
+#'
 #' This function fits a model on the training data for a given alogorithm.
 #'
 #' @param X a n by p matrix, containing all the covariates.
@@ -31,7 +31,7 @@ fit.mu <- function(X, Y, binary = FALSE, algo = "lasso", train.fun, active.fun, 
   n = nrow(X)
   p = ncol(X)
   if(verbose == TRUE){
-    cat(sprintf("Initial training on %i samples with %s algorithm...\\n",
+    cat(sprintf("Initial training on %i samples with %s algorithm...",
                 n, algo),"\n")
   }
   out = train.fun(X, Y)
@@ -47,7 +47,7 @@ fit.mu <- function(X, Y, binary = FALSE, algo = "lasso", train.fun, active.fun, 
 #### Xk: a set of null samples
 #### mu: the regression function estimator
 #' Calculate mu(Xk) where Xk denotes the null sample
-#
+#'
 #' This function calculates mu(Xk) for null replicates Xk.
 #'
 #' @param binary whether the response variable is binary (will be converted to factors if TRUE; default: FALSE).
@@ -95,7 +95,7 @@ calulate.mu_Xk <- function(binary = FALSE, X, i2, S, out, nulls.list_S = NULL, g
       for(j in 1:J){
         Gj = S[[j]]
         if(verbose == TRUE){
-          cat(sprintf("Calculating mu(Xk) for variable %i with %s algorithm on %i samples without useMCimation...\\n",
+          cat(sprintf("Calculating mu(Xk) for variable %i with %s algorithm on %i samples without Monte Carlo samples...",
                       Gj, algo, n2),"\n")
         }
         X_proj = X[i2,-Gj]%*% gamma_X.list_S[[j]]
@@ -123,7 +123,7 @@ calulate.mu_Xk <- function(binary = FALSE, X, i2, S, out, nulls.list_S = NULL, g
       for(j in 1:J){
         Gj = S[[j]]
         if(verbose == TRUE){
-          cat(sprintf("Calculating mu(Xk) for variable %i with %s algorithm on %i samples and %i null samples...\\n",
+          cat(sprintf("Calculating mu(Xk) for variable %i with %s algorithm on %i samples and %i null samples...",
                       Gj, algo, n2, K),"\n")
         }
         Xnulls = (nulls.list_S[[j]])[infer_nulls.idx] ## (K n2)*Lj
@@ -142,7 +142,7 @@ calulate.mu_Xk <- function(binary = FALSE, X, i2, S, out, nulls.list_S = NULL, g
         mu_Xk[[j]] = matrix(0, nrow = n2, ncol = K, byrow = FALSE)
         Gj = S[[j]]
         if(verbose == TRUE){
-          cat(sprintf("Calculating mu(Xk) for variable %i with %s algorithm on %i samples and %i null samples...\\n",
+          cat(sprintf("Calculating mu(Xk) for variable %i with %s algorithm on %i samples and %i null samples...",
                       Gj,algo, n2, K),"\n")
         }
         # for(k in 1:K){
@@ -168,7 +168,7 @@ calulate.mu_Xk <- function(binary = FALSE, X, i2, S, out, nulls.list_S = NULL, g
         for(j in 1:J){
           Gj = S[[j]]
           if(verbose == TRUE){
-            cat(sprintf("Calculating mu(Xk) for variable %i with %s algorithm on %i samples and %i null samples...\\n",
+            cat(sprintf("Calculating mu(Xk) for variable %i with %s algorithm on %i samples and %i null samples...",
                         Gj,algo, n2, K),"\n")
           }
           common_part = as.vector(X[i2,-Gj]%*%beta_hat[-Gj]) ## n*1
@@ -185,7 +185,7 @@ calulate.mu_Xk <- function(binary = FALSE, X, i2, S, out, nulls.list_S = NULL, g
         mu_Xk[[j]] = matrix(0, nrow = n2, ncol = K, byrow = FALSE)
         Gj = S[[j]]
         if(verbose == TRUE){
-          cat(sprintf("Calculating mu(Xk) for variable %i with %s algorithm on %i samples and %i null samples...\\n",
+          cat(sprintf("Calculating mu(Xk) for variable %i with %s algorithm on %i samples and %i null samples...",
                       Gj,algo, n2, K),"\n")
         }
         for(k in 1:K){
@@ -210,7 +210,7 @@ calulate.mu_Xk <- function(binary = FALSE, X, i2, S, out, nulls.list_S = NULL, g
 
 ### calculate the expected conditional variance term without using mu_Xk, denoted by V_mean
 #' Calculate the expected conditional variance term
-#
+#'
 #' This function calculates the expected conditional variance term Var(Xj |X-j)
 #'
 #' @param S a list of selected variables.
@@ -236,8 +236,8 @@ calculate.V_mean <- function(S, algo = "lasso", cv.rule = "min", out = NULL,
     beta_hat = coef(out, s = ifelse(cv.rule == "min", out$lambda.min,
                                     out$lambda.1se))[-1]
     if(verbose == TRUE){
-      cat(sprintf("Calculating V_mean for %s algorithm without Monte Carlo samples\\n",
-                  algo),"\n")
+      cat(sprintf("Calculating V_mean for %s algorithm without Monte Carlo samples...",
+                  algo), "\n")
     }
 
     if(length(unlist(S)) == length(S)){
@@ -261,7 +261,7 @@ calculate.V_mean <- function(S, algo = "lasso", cv.rule = "min", out = NULL,
 #### floodgate main function: general use,
 #### e.g. only need to known the conditional distribution of Xj | X-j
 #' Infer the model-free variable importance, mMSE gap via floodgate
-#
+#'
 #' This function infers the model-free variable importance, mMSE gap via floodgate.
 #'
 #' @param X a n by p matrix, containing all the covariates.
@@ -382,7 +382,7 @@ floodgate <- function(X, Y, i1, i2, nulls.list = NULL, gamma_X.list = NULL, sigm
 
 #### create a general version, e.g. works when Pj is known only
 #' Core procedure of floodgate
-#
+#'
 #' This function produces floodgate LCBs for given fitted mu.
 #'
 #' @param S a list of selected variables.
@@ -419,7 +419,7 @@ fg.inference <- function(S, mu_X, mu_Xk, Y, V_mean = NULL, useMC = TRUE,
 
     if(useMC == FALSE){
       if(verbose == TRUE){
-        cat(sprintf("Performing floodgate without Monte Carlo samples...\\n"),"\n")
+        cat("Performing floodgate without Monte Carlo samples...\n")
       }
       for(j in 1:J){
         R = Y *(as.vector(mu_X) - rowMeans(mu_Xk[[j]]))
@@ -432,7 +432,7 @@ fg.inference <- function(S, mu_X, mu_Xk, Y, V_mean = NULL, useMC = TRUE,
       }
     } else {
       if(verbose == TRUE){
-        cat(sprintf("Performing floodgate based on Monte Carlo samples...\\n"),"\n")
+        cat("Performing floodgate based on Monte Carlo samples..\n")
       }
       K = ncol(mu_Xk[[1]])
       for(j in 1:J){
@@ -456,7 +456,7 @@ fg.inference <- function(S, mu_X, mu_Xk, Y, V_mean = NULL, useMC = TRUE,
 }
 
 #' Obtain the floodgate LCB using the Delta method
-#
+#'
 #' This function produces floodgate LCB using the Delta method.
 #'
 #' @param R a vector of length n2, corresonding the term in the paper.

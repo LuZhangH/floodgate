@@ -2,8 +2,7 @@
 % Please edit documentation in R/method.R
 \name{fit.mu}
 \alias{fit.mu}
-\title{Fit a model on the training data for a given alogorithm.
-This function fits a model on the training data for a given alogorithm.}
+\title{Fit a model on the training data for a given alogorithm}
 \usage{
 fit.mu(
   X,
@@ -34,7 +33,6 @@ fit.mu(
 A list of two objects. out: the fitted model from train.fun; S: a list of selected variables.
 }
 \description{
-Fit a model on the training data for a given alogorithm.
 This function fits a model on the training data for a given alogorithm.
 }
 \details{

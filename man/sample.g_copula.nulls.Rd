@@ -2,8 +2,7 @@
 % Please edit documentation in R/sample.R
 \name{sample.g_copula.nulls}
 \alias{sample.g_copula.nulls}
-\title{Generate null samples for Gaussian copula covariates
-This function generates null samples of a given subset of variables for Gaussian copula covariates.}
+\title{Generate null samples for Gaussian copula covariates}
 \usage{
 sample.g_copula.nulls(X, S, K, gamma_X.list_S, sigma_X.list_S, verbose = FALSE)
 }
@@ -27,7 +26,6 @@ A list of length |S|, with each element being a (n*K)-dimensional vector, which 
 K set of null samples.
 }
 \description{
-Generate null samples for Gaussian copula covariates
 This function generates null samples of a given subset of variables for Gaussian copula covariates.
 }
 \details{

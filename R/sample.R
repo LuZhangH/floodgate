@@ -6,7 +6,7 @@
 
 #### generate null variables for Gaussian X model
 #' Generate null samples for multivariate Gaussian covariates
-#
+#'
 #' This function generates null samples of a given subset of variables for multivariate Gaussian covariates.
 #'
 #' @param X a n by p matrix, containing all the covariates.
@@ -74,7 +74,7 @@ sample.gaussian.nulls <- function(X, S, K, gamma_X.list_S, sigma_X.list_S, verbo
 
 #### generate null variables for Gaussian copula X model
 #' Generate null samples for Gaussian copula covariates
-#
+#'
 #' This function generates null samples of a given subset of variables for Gaussian copula covariates.
 #'
 #' @param X a n by p matrix, containing the Gaussian vectors before applying the probability integral transform
@@ -134,7 +134,7 @@ sample.g_copula.nulls <- function(X, S, K, gamma_X.list_S, sigma_X.list_S, verbo
 
 #### generate null variables for Gaussian X model via co-sufficient sampling
 #' Generate null samples for multivariate Gaussian covariates via co-sufficient sampling
-#
+#'
 #' This function generates co-sufficient null samples of a given subset of variables for multivariate Gaussian covariates.
 #'
 #' @param X a n by p matrix, containing all the covariates.
@@ -206,7 +206,7 @@ cosuff.gaussian.nulls <- function(X, i2, n21, S, K, sigma_X.list_S, verbose = FA
 
 ###################
 #' Generate null samples for Gaussian copula covariates via co-sufficient sampling
-#
+#'
 #' This function generates co-sufficient null samples of a given subset of variables for Gaussian copula covariates.
 #'
 #' @param X a n by p matrix, containing all the covariates.
