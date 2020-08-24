@@ -93,7 +93,7 @@ funs = funs.list[[algo]]
 fg.out = floodgate.binary(X, Y, i1, i2, M_n = M_n, nulls.list = nulls.list,
                    gamma_X.list = gamma_X.list, sigma_X.list = sigma_X.list,
                    Xmodel = Xmodel, funs = funs, algo = algo,
-                   alevel = alevel, verbose = TRUE)
+                   alevel = alevel)
 inf.out = as.data.frame(fg.out$inf.out)
 S = unlist(fg.out$S)
 inf.out$MACMgap = MACMgap[S]
