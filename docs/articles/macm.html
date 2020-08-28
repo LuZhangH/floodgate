@@ -106,17 +106,36 @@
 <div id="setup" class="section level1">
 <h1 class="hasAnchor">
 <a href="#setup" class="anchor"></a>Setup</h1>
-<pre><code>#&gt; Loading required package: Matrix
-#&gt; Loaded glmnet 3.0-1
-#&gt; Loaded lars 1.2
-#&gt; randomForest 4.6-14
-#&gt; Type rfNews() to see new features/changes/bug fixes.
-#&gt; Loading required package: splines
-#&gt; 
-#&gt; Attaching package: 'ggplot2'
-#&gt; The following object is masked from 'package:randomForest':
-#&gt; 
-#&gt;     margin</code></pre>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">2020</span>)
+<span class="co">## load required packages</span>
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">floodgate</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">methods</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">conformalInference</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">glmnet</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">lars</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">randomForest</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">SAM</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggplot2</span>)
+<span class="co">## load utility functions: related to model fitting</span>
+<span class="fu"><a href="https://rdrr.io/r/base/source.html">source</a></span>(<span class="st">"../utils/algo_utils.R"</span>)
+
+<span class="co">#### problem setup</span>
+<span class="no">n</span> <span class="kw">=</span> <span class="fl">1000</span> <span class="co"># sample size</span>
+<span class="no">p</span> <span class="kw">=</span> <span class="fl">1000</span> <span class="co"># covariate dimension</span>
+
+<span class="no">Xmodel</span> <span class="kw">=</span> <span class="st">"gaussian"</span> <span class="co"># covariate distribution</span>
+<span class="no">rho</span> <span class="kw">=</span> <span class="fl">0.3</span> <span class="co"># auto-correlation coefficient</span>
+
+<span class="no">Ydist</span> <span class="kw">=</span> <span class="st">"binom"</span> <span class="co"># conditional model of response</span>
+<span class="no">s</span> <span class="kw">=</span> <span class="fl">20</span> <span class="co"># number of non-nulls</span>
+<span class="no">amplitude</span> <span class="kw">=</span> <span class="fl">10</span> <span class="co"># signal amplitude value</span>
+
+
+<span class="no">split.prop</span> <span class="kw">=</span> <span class="fl">0.5</span> <span class="co"># splitting proportion</span>
+<span class="no">K</span> <span class="kw">=</span> <span class="fl">100</span>
+<span class="no">M_n</span> <span class="kw">=</span> <span class="fl">400</span> <span class="co"># number of null replicates for esimating the conditional mean of mu(X)</span>
+<span class="no">K_all</span> <span class="kw">=</span> <span class="no">K</span> + <span class="no">M_n</span> <span class="co"># number of total null replicates</span>
+<span class="no">alevel</span> <span class="kw">=</span> <span class="fl">0.05</span> <span class="co"># confidence level</span></pre></body></html></div>
 </div>
 <div id="prepare-data" class="section level1">
 <h1 class="hasAnchor">
@@ -133,16 +152,16 @@
 <span class="co">## generate the covaraites X </span>
 <span class="no">X</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>*<span class="no">p</span>),<span class="no">n</span>,<span class="no">p</span>)<span class="kw">%*%</span> <span class="no">Sigma.chol</span>
 <span class="co">## Generate the response Y from a linear model</span>
-<span class="no">Y</span> <span class="kw">=</span> <span class="fu">gen.Y</span>(<span class="no">X</span>, <span class="no">beta</span>, <span class="kw">Ydist</span> <span class="kw">=</span> <span class="no">Ydist</span>)</pre></body></html></div>
+<span class="no">Y</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/floodgate/man/gen.Y.html">gen.Y</a></span>(<span class="no">X</span>, <span class="no">beta</span>, <span class="kw">Ydist</span> <span class="kw">=</span> <span class="no">Ydist</span>)</pre></body></html></div>
 </div>
 <div id="sample-null-covariates-and-compute-variable-importance-measures" class="section level1">
 <h1 class="hasAnchor">
 <a href="#sample-null-covariates-and-compute-variable-importance-measures" class="anchor"></a>Sample null covariates and compute variable importance measures</h1>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co">## sample null covariates </span>
-<span class="no">nulls.list</span> <span class="kw">=</span> <span class="fu">sample.gaussian.nulls</span>(<span class="kw">X</span> <span class="kw">=</span> <span class="no">X</span>, <span class="kw">S</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span>(<span class="fl">1</span>:<span class="no">p</span>), <span class="kw">K</span> <span class="kw">=</span> <span class="no">K_all</span>, <span class="kw">gamma_X.list_S</span> <span class="kw">=</span> <span class="no">gamma_X.list</span>,
+<span class="no">nulls.list</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/floodgate/man/sample.gaussian.nulls.html">sample.gaussian.nulls</a></span>(<span class="kw">X</span> <span class="kw">=</span> <span class="no">X</span>, <span class="kw">S</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span>(<span class="fl">1</span>:<span class="no">p</span>), <span class="kw">K</span> <span class="kw">=</span> <span class="no">K_all</span>, <span class="kw">gamma_X.list_S</span> <span class="kw">=</span> <span class="no">gamma_X.list</span>,
                                    <span class="kw">sigma_X.list_S</span> <span class="kw">=</span> <span class="no">sigma_X.list</span>)
 <span class="co">## compute MACMgap values</span>
-<span class="no">MACMgap</span> <span class="kw">=</span> <span class="fu">compute.movi</span>(<span class="kw">beta</span> <span class="kw">=</span> <span class="no">beta</span>, <span class="kw">Xmodel</span> <span class="kw">=</span> <span class="no">Xmodel</span>, <span class="kw">Ydist</span> <span class="kw">=</span> <span class="no">Ydist</span>,
+<span class="no">MACMgap</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/floodgate/man/compute.movi.html">compute.movi</a></span>(<span class="kw">beta</span> <span class="kw">=</span> <span class="no">beta</span>, <span class="kw">Xmodel</span> <span class="kw">=</span> <span class="no">Xmodel</span>, <span class="kw">Ydist</span> <span class="kw">=</span> <span class="no">Ydist</span>,
                        <span class="kw">sigma_X.list</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="kw">X</span> <span class="kw">=</span> <span class="no">X</span>, <span class="kw">nulls.list</span> <span class="kw">=</span> <span class="no">nulls.list</span>)</pre></body></html></div>
 </div>
 <div id="run-floodgate" class="section level1">
@@ -162,40 +181,86 @@
 <a href="#plot-the-results" class="anchor"></a>Plot the results</h2>
 <p>The following plot shows the floodgate lower confidence bound (LCB): the horizontal bar with a black color and the mMSEgap: the star-shaped point with a red color. The step of model fitting on the training data also outputs a selected subset <span class="math inline">\(S\)</span>, in additional to a regression function estimator <span class="math inline">\(\mu\)</span>. We only plot the LCBs for covariates in <span class="math inline">\(S\)</span> here.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co">## run floodgate to obtain LCBs</span>
-<span class="no">fg.out</span> <span class="kw">=</span> <span class="fu">floodgate.binary</span>(<span class="no">X</span>, <span class="no">Y</span>, <span class="no">i1</span>, <span class="no">i2</span>, <span class="kw">M_n</span> <span class="kw">=</span> <span class="no">M_n</span>, <span class="kw">nulls.list</span> <span class="kw">=</span> <span class="no">nulls.list</span>,
+<span class="no">fg.out</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/floodgate/man/floodgate.binary.html">floodgate.binary</a></span>(<span class="no">X</span>, <span class="no">Y</span>, <span class="no">i1</span>, <span class="no">i2</span>, <span class="kw">M_n</span> <span class="kw">=</span> <span class="no">M_n</span>, <span class="kw">nulls.list</span> <span class="kw">=</span> <span class="no">nulls.list</span>,
                    <span class="kw">gamma_X.list</span> <span class="kw">=</span> <span class="no">gamma_X.list</span>, <span class="kw">sigma_X.list</span> <span class="kw">=</span> <span class="no">sigma_X.list</span>,
                    <span class="kw">Xmodel</span> <span class="kw">=</span> <span class="no">Xmodel</span>, <span class="kw">funs</span> <span class="kw">=</span> <span class="no">funs</span>, <span class="kw">algo</span> <span class="kw">=</span> <span class="no">algo</span>,
                    <span class="kw">alevel</span> <span class="kw">=</span> <span class="no">alevel</span>)
 <span class="co">#&gt; Initial training on 500 samples with lasso algorithm... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 23 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 29 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 36 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 44 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 56 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 80 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 92 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 113 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 134 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 144 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
-<span class="co">#&gt; Calculating mu(Xk) for variable 163 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
-<span class="co">#&gt; Calculating mu(Xk) for variable 195 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 164 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 170 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 211 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 212 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 224 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 236 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 273 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 315 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 321 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 343 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 412 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 413 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 427 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 435 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 450 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 452 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 494 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 498 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 504 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 526 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 534 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 549 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 551 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 554 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 571 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 599 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 610 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 623 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 652 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 687 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 694 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 697 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 698 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 703 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 710 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 728 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 734 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 745 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 808 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 819 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 832 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 839 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 841 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 848 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 864 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 866 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 889 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 895 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 896 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 935 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 945 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 992 with lasso algorithm on 500 samples without Monte Carlo samples... </span>
 <span class="co">#&gt; Performing fg analysis...\n</span>
 <span class="no">inf.out</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="no">fg.out</span>$<span class="no">inf.out</span>)
 <span class="no">S</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="no">fg.out</span>$<span class="no">S</span>)
 <span class="no">inf.out</span>$<span class="no">MACMgap</span> <span class="kw">=</span> <span class="no">MACMgap</span>[<span class="no">S</span>]
 
-<span class="fu">ggplot</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">inf.out</span>, <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">MACMgap</span>)) +
-      <span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html">ylim</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">inf.out</span>$<span class="no">MACMgap</span>, <span class="no">inf.out</span>$<span class="no">LCB</span>) + <span class="fl">0.05</span>) +
-      <span class="fu">ggtitle</span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"algo = "</span>, <span class="no">algo</span> )) +
-      <span class="fu">ylab</span>(<span class="st">"MACMgap and LCB"</span>) + <span class="fu">xlab</span>(<span class="st">"Selected variables"</span>) +
-      <span class="fu">geom_point</span>(<span class="kw">color</span> <span class="kw">=</span> <span class="st">"red"</span>, <span class="kw">shape</span> <span class="kw">=</span> <span class="fl">8</span>) +
-      <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="kw">ymin</span><span class="kw">=</span><span class="no">LCB</span>, <span class="kw">ymax</span><span class="kw">=</span><span class="no">LCB</span>), <span class="kw">width</span> <span class="kw">=</span> <span class="fl">15</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"black"</span>) +
-      <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">LCB</span>, <span class="kw">xend</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">yend</span> <span class="kw">=</span> <span class="no">MACMgap</span>),
-                  <span class="kw">arrow</span> <span class="kw">=</span> <span class="fu">arrow</span>(<span class="kw">length</span> <span class="kw">=</span> <span class="fu">unit</span>(<span class="fl">0.15</span>, <span class="st">"cm"</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"closed"</span>))</pre></body></html></div>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">inf.out</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">MACMgap</span>)) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">ylim</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">inf.out</span>$<span class="no">MACMgap</span>, <span class="no">inf.out</span>$<span class="no">LCB</span>) + <span class="fl">0.05</span>) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"algo = "</span>, <span class="no">algo</span> )) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"MACMgap and LCB"</span>) + <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span>(<span class="st">"Selected variables"</span>) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>(<span class="kw">color</span> <span class="kw">=</span> <span class="st">"red"</span>, <span class="kw">shape</span> <span class="kw">=</span> <span class="fl">8</span>, <span class="kw">size</span> <span class="kw">=</span> <span class="fl">3.5</span>) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">ymin</span><span class="kw">=</span><span class="no">LCB</span>, <span class="kw">ymax</span><span class="kw">=</span><span class="no">LCB</span>), <span class="kw">width</span> <span class="kw">=</span> <span class="fl">15</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"black"</span>) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">LCB</span>, <span class="kw">xend</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">yend</span> <span class="kw">=</span> <span class="no">MACMgap</span>),
+                  <span class="kw">arrow</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/reexports.html">arrow</a></span>(<span class="kw">length</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/reexports.html">unit</a></span>(<span class="fl">0.15</span>, <span class="st">"cm"</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"closed"</span>))</pre></body></html></div>
 <p><img src="macm_files/figure-html/unnamed-chunk-5-1.png" width="700"> The arrow for a given covaraite starts from the LCB and ends at the mMSEgap. The arrow provides a good illustration of LCB’s performance, with its length being the half-width and its direction indicating coverage/miscoverage (upward: coverage; downward: miscovergae; leftward: coverage with <span class="math inline">\(\text{LCB}=\mathcal{I} =0\)</span>).</p>
 </div>
 <div id="try-with-a-different-fitting-algorithm" class="section level2">
@@ -205,56 +270,99 @@
 <span class="no">algo</span> <span class="kw">=</span> <span class="st">"binom_lasso"</span>
 <span class="no">funs</span> <span class="kw">=</span> <span class="no">funs.list</span><span class="kw">[[</span><span class="no">algo</span>]]
 <span class="co">## run floodgate to obtain LCBs</span>
-<span class="no">fg.out</span> <span class="kw">=</span> <span class="fu">floodgate.binary</span>(<span class="no">X</span>, <span class="no">Y</span>, <span class="no">i1</span>, <span class="no">i2</span>, <span class="kw">M_n</span> <span class="kw">=</span> <span class="no">M_n</span>, <span class="kw">nulls.list</span> <span class="kw">=</span> <span class="no">nulls.list</span>,
+<span class="no">fg.out</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/floodgate/man/floodgate.binary.html">floodgate.binary</a></span>(<span class="no">X</span>, <span class="no">Y</span>, <span class="no">i1</span>, <span class="no">i2</span>, <span class="kw">M_n</span> <span class="kw">=</span> <span class="no">M_n</span>, <span class="kw">nulls.list</span> <span class="kw">=</span> <span class="no">nulls.list</span>,
                    <span class="kw">gamma_X.list</span> <span class="kw">=</span> <span class="no">gamma_X.list</span>, <span class="kw">sigma_X.list</span> <span class="kw">=</span> <span class="no">sigma_X.list</span>,
                    <span class="kw">Xmodel</span> <span class="kw">=</span> <span class="no">Xmodel</span>, <span class="kw">funs</span> <span class="kw">=</span> <span class="no">funs</span>, <span class="kw">algo</span> <span class="kw">=</span> <span class="no">algo</span>,
                    <span class="kw">alevel</span> <span class="kw">=</span> <span class="no">alevel</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 <span class="co">#&gt; Initial training on 500 samples with binom_lasso algorithm... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 23 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 29 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 36 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 44 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
-<span class="co">#&gt; Calculating mu(Xk) for variable 124 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 56 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 80 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 92 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 113 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 118 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 123 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 134 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 144 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
-<span class="co">#&gt; Calculating mu(Xk) for variable 163 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 164 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
-<span class="co">#&gt; Calculating mu(Xk) for variable 172 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
-<span class="co">#&gt; Calculating mu(Xk) for variable 195 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 167 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 170 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 200 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 211 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 212 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 224 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 236 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 273 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 285 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 299 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 315 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 321 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
-<span class="co">#&gt; Calculating mu(Xk) for variable 359 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 343 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 412 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 413 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 427 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 435 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 450 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 452 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 494 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 498 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 504 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 526 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 534 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 549 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 551 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 554 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 569 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 571 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 599 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 610 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 623 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
-<span class="co">#&gt; Calculating mu(Xk) for variable 691 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 652 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 683 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 687 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 694 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 697 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 698 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 703 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
-<span class="co">#&gt; Calculating mu(Xk) for variable 723 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 710 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 728 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 734 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
-<span class="co">#&gt; Calculating mu(Xk) for variable 738 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
-<span class="co">#&gt; Calculating mu(Xk) for variable 770 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 745 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 756 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 762 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 808 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 819 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 832 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 837 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 839 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 841 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 848 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 864 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 866 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 889 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 895 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 896 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 934 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 935 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 936 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
+<span class="co">#&gt; Calculating mu(Xk) for variable 945 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Calculating mu(Xk) for variable 992 with binom_lasso algorithm on 500 samples and 500 null samples... </span>
 <span class="co">#&gt; Performing fg analysis...\n</span>
 <span class="co">## extract output and produce plots</span>
 <span class="no">inf.out</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="no">fg.out</span>$<span class="no">inf.out</span>)
 <span class="no">S</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="no">fg.out</span>$<span class="no">S</span>)
 <span class="no">inf.out</span>$<span class="no">MACMgap</span> <span class="kw">=</span> <span class="no">MACMgap</span>[<span class="no">S</span>]
-<span class="fu">ggplot</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">inf.out</span>, <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">MACMgap</span>)) +
-      <span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html">ylim</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">inf.out</span>$<span class="no">MACMgap</span>, <span class="no">inf.out</span>$<span class="no">LCB</span>) + <span class="fl">0.05</span>) +
-      <span class="fu">ggtitle</span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"algo = "</span>, <span class="no">algo</span> )) +
-      <span class="fu">ylab</span>(<span class="st">"MACMgap and LCB"</span>) + <span class="fu">xlab</span>(<span class="st">"Selected variables"</span>) +
-      <span class="fu">geom_point</span>(<span class="kw">color</span> <span class="kw">=</span> <span class="st">"red"</span>, <span class="kw">shape</span> <span class="kw">=</span> <span class="fl">8</span>) +
-      <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="kw">ymin</span><span class="kw">=</span><span class="no">LCB</span>, <span class="kw">ymax</span><span class="kw">=</span><span class="no">LCB</span>), <span class="kw">width</span> <span class="kw">=</span> <span class="fl">15</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"black"</span>) +
-      <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">LCB</span>, <span class="kw">xend</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">yend</span> <span class="kw">=</span> <span class="no">MACMgap</span>),
-                  <span class="kw">arrow</span> <span class="kw">=</span> <span class="fu">arrow</span>(<span class="kw">length</span> <span class="kw">=</span> <span class="fu">unit</span>(<span class="fl">0.15</span>, <span class="st">"cm"</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"closed"</span>))</pre></body></html></div>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">inf.out</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">MACMgap</span>)) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">ylim</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">inf.out</span>$<span class="no">MACMgap</span>, <span class="no">inf.out</span>$<span class="no">LCB</span>) + <span class="fl">0.05</span>) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"algo = "</span>, <span class="no">algo</span> )) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"MACMgap and LCB"</span>) + <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span>(<span class="st">"Selected variables"</span>) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>(<span class="kw">color</span> <span class="kw">=</span> <span class="st">"red"</span>, <span class="kw">shape</span> <span class="kw">=</span> <span class="fl">8</span>, <span class="kw">size</span> <span class="kw">=</span> <span class="fl">3.5</span>) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">ymin</span><span class="kw">=</span><span class="no">LCB</span>, <span class="kw">ymax</span><span class="kw">=</span><span class="no">LCB</span>), <span class="kw">width</span> <span class="kw">=</span> <span class="fl">15</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"black"</span>) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">LCB</span>, <span class="kw">xend</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">yend</span> <span class="kw">=</span> <span class="no">MACMgap</span>),
+                  <span class="kw">arrow</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/reexports.html">arrow</a></span>(<span class="kw">length</span> <span class="kw">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/reexports.html">unit</a></span>(<span class="fl">0.15</span>, <span class="st">"cm"</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"closed"</span>))</pre></body></html></div>
 <p><img src="macm_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
 </div>

@@ -26,7 +26,7 @@ library(lars)
 library(randomForest)
 library(SAM)
 library(ggplot2)
-## load utility functions
+## load utility functions: related to model fitting
 source("../utils/algo_utils.R")
 
 #### problem setup
@@ -38,7 +38,7 @@ rho = 0.3 # auto-correlation coefficient
 
 Ydist = "binom" # conditional model of response
 s = 20 # number of non-nulls
-amplitude = 5 # signal amplitude value
+amplitude = 10 # signal amplitude value
 
 
 split.prop = 0.5 # splitting proportion
@@ -109,7 +109,7 @@ ggplot(data = inf.out, aes(x = S, y = MACMgap)) +
       ylim(0, max(inf.out$MACMgap, inf.out$LCB) + 0.05) + 
       ggtitle(paste0("algo = ", algo )) + 
       ylab("MACMgap and LCB") + xlab("Selected variables") + 
-      geom_point(color = "red", shape = 8) + 
+      geom_point(color = "red", shape = 8, size = 3.5) + 
       geom_errorbar(aes(ymin=LCB, ymax=LCB), width = 15, color = "black") + 
       geom_segment(aes(x = S, y = LCB, xend = S, yend = MACMgap),
                   arrow = arrow(length = unit(0.15, "cm"), type = "closed"))
@@ -136,7 +136,7 @@ ggplot(data = inf.out, aes(x = S, y = MACMgap)) +
       ylim(0, max(inf.out$MACMgap, inf.out$LCB) + 0.05) + 
       ggtitle(paste0("algo = ", algo )) + 
       ylab("MACMgap and LCB") + xlab("Selected variables") + 
-      geom_point(color = "red", shape = 8) + 
+      geom_point(color = "red", shape = 8, size = 3.5) + 
       geom_errorbar(aes(ymin=LCB, ymax=LCB), width = 15, color = "black") + 
       geom_segment(aes(x = S, y = LCB, xend = S, yend = MACMgap),
                   arrow = arrow(length = unit(0.15, "cm"), type = "closed"))

@@ -106,7 +106,7 @@ ggplot(data = inf.out, aes(x = S, y = mMSEgap)) +
       ylim(0, max(inf.out$mMSEgap, inf.out$LCB) + 0.05) + 
       ggtitle(paste0("algo = ", algo )) +
       ylab("mMSEgap and LCB") + xlab("Selected variables") + 
-      geom_point(color = "red", shape = 8) + 
+      geom_point(color = "red", shape = 8, size = 3.5) + 
       geom_errorbar(aes(ymin=LCB, ymax=LCB), width = 15, color = "black") +
       geom_segment(aes(x = S, y = LCB, xend = S, yend = mMSEgap),
                     arrow = arrow(length = unit(0.15, "cm"), type = "closed"))
@@ -131,7 +131,7 @@ ggplot(data = inf.out, aes(x = S, y = mMSEgap)) +
       ylim(0, max(inf.out$mMSEgap, inf.out$LCB) + 0.05) + 
       ggtitle(paste0("algo = ", algo )) +
       ylab("mMSEgap and LCB") + xlab("Selected variables") + 
-      geom_point(color = "red", shape = 8) + 
+      geom_point(color = "red", shape = 8, size = 3.5) + 
       geom_errorbar(aes(ymin=LCB, ymax=LCB), width = 15, color = "black") +
       geom_segment(aes(x = S, y = LCB, xend = S, yend = mMSEgap),
                     arrow = arrow(length = unit(0.15, "cm"), type = "closed"))
