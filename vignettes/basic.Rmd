@@ -97,6 +97,7 @@ fg.out = floodgate(X, Y, i1, i2, nulls.list = nulls.list,
 
 ## Plot the results
 The following plot shows the floodgate lower confidence bound (LCB): the horizontal bar with a black color and the mMSEgap: the star-shaped point with a red color. The step of model fitting on the training data also outputs a selected subset $S$, in additional to a regression function estimator $\mu$. We only plot the LCBs for covariates in $S$ here.
+
 ```{r}
 ## extract output and produce plots
 inf.out = as.data.frame(fg.out$inf.out)
@@ -111,6 +112,7 @@ ggplot(data = inf.out, aes(x = S, y = mMSEgap)) +
       geom_segment(aes(x = S, y = LCB, xend = S, yend = mMSEgap),
                     arrow = arrow(length = unit(0.15, "cm"), type = "closed"))
 ```
+
 The arrow for a given covaraite starts from the LCB and ends at the mMSEgap. The arrow provides a good illustration of LCB's performance, with its length being the half-width and its direction indicating coverage/miscoverage (upward: coverage; downward: miscovergae; leftward: coverage with $\text{LCB}=\mathcal{I} =0$).
 
 ## Try with a different fitting algorithm
