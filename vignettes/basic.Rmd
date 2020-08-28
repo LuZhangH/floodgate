@@ -28,7 +28,7 @@ library(lars)
 library(randomForest)
 library(SAM)
 library(ggplot2)
-## load utility functions
+## load utility functions: related to model fitting
 source("../utils/algo_utils.R")
 
 #### problem setup
@@ -73,7 +73,7 @@ nulls.list = sample.gaussian.nulls(X = X, S = as.list(1:p), K = K, gamma_X.list_
 
 ## compute the mMSEgap values
 mMSEgap = compute.movi(beta = beta, Xmodel = Xmodel, Ydist = Ydist,
-                      sigma_X.list = sigma_X.list, nulls.list = nulls.list)
+                       sigma_X.list = sigma_X.list, nulls.list = nulls.list)
 
 ```
 
@@ -93,7 +93,12 @@ fg.out = floodgate(X, Y, i1, i2, nulls.list = nulls.list,
                    gamma_X.list = gamma_X.list, sigma_X.list = sigma_X.list,
                    Xmodel = Xmodel, funs, algo = algo,
                    alevel = alevel, verbose = TRUE)
+```
 
+
+## Plot the results
+The following plot shows the floodgate lower confidence bound (LCB): the horizontal bar with a black color and the mMSEgap: the star-shaped point with a red color. The step of model fitting on the training data also outputs a selected subset $S$, in additional to a regression function estimator $\mu$. We only plot the LCBs for covariates in $S$ here. The arrow for a given covaraite starts from the LCB and ends at the mMSEgap. The arrow provides a good illustration of LCB's performance, with its length being the half-width and its direction indicating coverage/miscoverage (upward: coverage; downward: miscovergae; leftward: coverage with $\text{LCB}=\mathcal{I} =0$).
+```{r}
 ## extract output and produce plots
 inf.out = as.data.frame(fg.out$inf.out)
 S = unlist(fg.out$S)
@@ -106,6 +111,11 @@ ggplot(data = inf.out, aes(x = S, y = mMSEgap)) +
       geom_errorbar(aes(ymin=LCB, ymax=LCB), width = 15, color = "black") +
       geom_segment(aes(x = S, y = LCB, xend = S, yend = mMSEgap),
                     arrow = arrow(length = unit(0.15, "cm"), type = "closed"))
+```
+
+
+## Try with a different fitting algorithm
+```{r}
 ## use SAM to estimate the conditional mean
 algo = "sam"
 funs = funs.list[[algo]]
