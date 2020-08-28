@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 # Setup 
 ```{r setup, message=FALSE}
-set.seed(2020)
+set.seed(1995)
 ## load required packages
 library(floodgate)
 library(methods)
@@ -115,6 +115,7 @@ ggplot(data = inf.out, aes(x = S, y = MACMgap)) +
                   arrow = arrow(length = unit(0.15, "cm"), type = "closed"))
 
 ```
+
 The arrow for a given covaraite starts from the LCB and ends at the mMSEgap. The arrow provides a good illustration of LCB's performance, with its length being the half-width and its direction indicating coverage/miscoverage (upward: coverage; downward: miscovergae; leftward: coverage with $\text{LCB}=\mathcal{I} =0$).
 
 

@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 # Setup 
 ```{r setup, message=FALSE}
-set.seed(2020)
+set.seed(1995)
 ## load required packages
 library(floodgate)
 library(methods)
