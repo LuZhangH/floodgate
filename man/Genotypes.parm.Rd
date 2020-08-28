@@ -20,6 +20,9 @@ This function obtains the HMM parameters from a fastPHASE genotype model
 \details{
 The first p variables also follow a HMM.
 }
+\references{
+\insertRef{sesia2019}{floodgate}
+}
 \seealso{
 Other models: 
 \code{\link{HMM.parm}()},

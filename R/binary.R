@@ -27,7 +27,9 @@
 #' cpu.time: computing time.
 #' @family methods
 #'
-#' @details TBD
+#' @references
+#' \insertRef{LZ-LJ:2020}{floodgate}
+#'
 #' @export
 floodgate.binary <- function(X, Y, i1, i2, M_n = M_n,
                              nulls.list = NULL, gamma_X.list = NULL, sigma_X.list = NULL,
@@ -131,7 +133,9 @@ floodgate.binary <- function(X, Y, i1, i2, M_n = M_n,
 #'
 #' @family methods
 #'
-#' @details TBD
+#' @references
+#' \insertRef{LZ-LJ:2020}{floodgate}
+#'
 #' @export
 fg.inference.binary <- function(S, mu_X, mu_Xk, Y, M_n = NULL, one.sided = TRUE, alevel = 0.05, test = "z", verbose = TRUE){
   ### Y: n2-dim vector

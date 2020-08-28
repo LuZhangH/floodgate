@@ -65,8 +65,8 @@ cpu.time: computing time.
 \description{
 This function infers the model-free variable importance, mMSE gap via floodgate.
 }
-\details{
-TBD
+\references{
+\insertRef{LZ-LJ:2020}{floodgate}
 }
 \seealso{
 Other methods: 

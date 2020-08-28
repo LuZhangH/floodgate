@@ -33,10 +33,4 @@ A vector of p, with each element being the value of I for a given covariate.
 \description{
 This function computes the mMSE gap value.
 }
-\details{
-TBD
-}
-\references{
-TBD
-}
 \concept{utils}

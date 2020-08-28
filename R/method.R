@@ -14,9 +14,9 @@
 #'
 #' @family methods
 #'
-#' @details TBD
+#' @references
+#' \insertRef{LZ-LJ:2020}{floodgate}
 #'
-#' @references TBD
 #' @export
 fit.mu <- function(X, Y, binary = FALSE, algo = "lasso", train.fun, active.fun, verbose = TRUE){
 
@@ -70,9 +70,9 @@ fit.mu <- function(X, Y, binary = FALSE, algo = "lasso", train.fun, active.fun, 
 #' @return A list of kength |S|, whose element is the matrix of mu(Xk) with dimension n2-by-K or n2-by-1.
 #' @family methods
 #'
-#' @details TBD
+#' @references
+#' \insertRef{LZ-LJ:2020}{floodgate}
 #'
-#' @references TBD
 #' @export
 calulate.mu_Xk <- function(binary = FALSE, X, i2, S, out, nulls.list_S = NULL, gamma_X.list_S = NULL,
                            useMC = TRUE, Xmodel = "gaussian", algo = "lasso",
@@ -224,7 +224,9 @@ calulate.mu_Xk <- function(binary = FALSE, X, i2, S, out, nulls.list_S = NULL, g
 #' @return A vector of length |S|, whose element is the expected conditional variance term Var(Xj |X-j).
 #' @family methods
 #'
-#' @details TBD
+#' @references
+#' \insertRef{LZ-LJ:2020}{floodgate}
+#'
 #' @export
 calculate.V_mean <- function(S, algo = "lasso", cv.rule = "min", out = NULL,
                              Xmodel = "gaussian", sigma_X.list_S = NULL, verbose = FALSE){
@@ -288,7 +290,9 @@ calculate.V_mean <- function(S, algo = "lasso", cv.rule = "min", out = NULL,
 #' cpu.time: computing time.
 #' @family methods
 #'
-#' @details TBD
+#' @references
+#' \insertRef{LZ-LJ:2020}{floodgate}
+#'
 #' @export
 floodgate <- function(X, Y, i1, i2, nulls.list = NULL, gamma_X.list = NULL, sigma_X.list = NULL,
                       Xmodel = "gaussian", funs, algo = "lasso", cv.rule = "min",
@@ -401,7 +405,9 @@ floodgate <- function(X, Y, i1, i2, nulls.list = NULL, gamma_X.list = NULL, sigm
 #'
 #' @family methods
 #'
-#' @details TBD
+#' @references
+#' \insertRef{LZ-LJ:2020}{floodgate}
+#'
 #' @export
 fg.inference <- function(S, mu_X, mu_Xk, Y, V_mean = NULL, useMC = TRUE,
                          one.sided = TRUE, alevel = 0.05, test = "z", verbose = TRUE){
@@ -469,7 +475,9 @@ fg.inference <- function(S, mu_X, mu_Xk, Y, V_mean = NULL, useMC = TRUE,
 #'
 #' @family methods
 #'
-#' @details TBD
+#' @references
+#' \insertRef{LZ-LJ:2020}{floodgate}
+#'
 #' @export
 inference_general <- function(R, V = NULL, V_mean = NULL, alevel  = 0.05, test = "z", one.sided = TRUE){
   ### V: 1/(K-1)*sum(Xi_tilde_k - mean(mu(Xi_tilde)))^2 , i \in [n2]

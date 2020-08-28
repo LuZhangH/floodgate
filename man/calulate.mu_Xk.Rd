@@ -57,11 +57,8 @@ A list of kength |S|, whose element is the matrix of mu(Xk) with dimension n2-by
 \description{
 This function calculates mu(Xk) for null replicates Xk.
 }
-\details{
-TBD
-}
 \references{
-TBD
+\insertRef{LZ-LJ:2020}{floodgate}
 }
 \seealso{
 Other methods: 

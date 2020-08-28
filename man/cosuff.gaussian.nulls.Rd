@@ -31,11 +31,8 @@ cosuf.sigma_X.list:a list of length |S| whose element is Var(Xij|X-ij,Tm).
 \description{
 This function generates co-sufficient null samples of a given subset of variables for multivariate Gaussian covariates.
 }
-\details{
-TBD
-}
 \references{
-TBD
+\insertRef{LZ-LJ:2020}{floodgate}
 }
 \seealso{
 Other sampling: 

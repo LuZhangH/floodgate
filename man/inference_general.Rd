@@ -32,8 +32,8 @@ A vector of length 4: p-value, LCI, UCI and LCB.
 \description{
 This function produces floodgate LCB using the Delta method.
 }
-\details{
-TBD
+\references{
+\insertRef{LZ-LJ:2020}{floodgate}
 }
 \seealso{
 Other methods: 

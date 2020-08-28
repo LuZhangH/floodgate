@@ -68,8 +68,8 @@ cpu.time: computing time.
 \description{
 This function infers the model-free variable importance, MACM gap for binary responses via floodgate.
 }
-\details{
-TBD
+\references{
+\insertRef{LZ-LJ:2020}{floodgate}
 }
 \seealso{
 Other methods: 

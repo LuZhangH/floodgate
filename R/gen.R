@@ -22,8 +22,6 @@
 #' use "binom" to specifiy a logistic model, with Y taking values in \{-1,1\},
 #' use "poisson" to specify a log-poisson model.
 #'
-#' @references TBD
-#'
 #' @import stats
 #' @export
 gen.Y <- function(X, beta, Ydist = "gaussian"){
@@ -66,9 +64,7 @@ gen.Y <- function(X, beta, Ydist = "gaussian"){
 #'
 #' @family models
 #'
-#' @details TBD
-
-#' @references TBD
+#' @references \insertRef{sesia2019}{floodgate}
 #' @export
 HMM.parm <- function(p, K_st, M){
 
@@ -101,6 +97,9 @@ HMM.parm <- function(p, K_st, M){
 #' @family models
 #'
 #' @details The first p variables also follow a HMM.
+#'
+#' @references
+#' \insertRef{sesia2019}{floodgate}
 #'
 #' @importFrom SNPknock loadHMM
 #' @export

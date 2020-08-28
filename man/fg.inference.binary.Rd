@@ -43,8 +43,8 @@ S: a list of selected variables.
 \description{
 This function produces floodgate LCBs with given fitted mu (under binary responses).
 }
-\details{
-TBD
+\references{
+\insertRef{LZ-LJ:2020}{floodgate}
 }
 \seealso{
 Other methods: 

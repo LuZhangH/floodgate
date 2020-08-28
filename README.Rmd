@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# floodgate
+# Floodgate
 
 The goal of floodgate is to provide inference on model-free variable importance.
 
@@ -24,3 +24,9 @@ You can install the development version of floodgate from [GitHub](https://githu
 ``` r
 devtools::install_github("LuZhangH/floodgate")
 ```
+
+## References
+
+Zhang, Lu, and Lucas Janson. "Floodgate: inference for model-free variable importance." arXiv preprint [arXiv:2007.01283][1] (2020).
+
+[1]: https://arxiv.org/abs/2007.01283

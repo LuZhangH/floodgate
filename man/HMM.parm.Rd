@@ -21,11 +21,8 @@ pEmit: an array of size (p, M, K_st), which is the emission probability matrix.
 \description{
 This function obtains model parameters from a randomly generated hidden Markov model
 }
-\details{
-TBD
-}
 \references{
-TBD
+\insertRef{sesia2019}{floodgate}
 }
 \seealso{
 Other models: 

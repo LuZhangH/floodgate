@@ -28,11 +28,8 @@ K set of null samples.
 \description{
 This function generates co-sufficient null samples of a given subset of variables for Gaussian copula covariates.
 }
-\details{
-TBD
-}
 \references{
-TBD
+\insertRef{LZ-LJ:2020}{floodgate}
 }
 \seealso{
 Other sampling: 

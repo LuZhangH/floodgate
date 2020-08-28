@@ -5,7 +5,6 @@
 ^\.travis\.yml$
 ^appveyor\.yml$
 ^codecov\.yml$
-^utils$
 
 ^_pkgdown\.yml$
 ^docs$

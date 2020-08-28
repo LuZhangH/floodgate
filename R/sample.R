@@ -21,9 +21,8 @@
 #'
 #' @family sampling
 #'
-#' @details TBD
-#'
-#' @references TBD
+#' @references
+#' \insertRef{LZ-LJ:2020}{floodgate}
 #'
 #' @import stats
 #' @export
@@ -90,9 +89,9 @@ sample.gaussian.nulls <- function(X, S, K, gamma_X.list_S, sigma_X.list_S, verbo
 #'
 #' @family sampling
 #'
-#' @details TBD
 #'
-#' @references TBD
+#' @references
+#' \insertRef{LZ-LJ:2020}{floodgate}
 #'
 #' @import stats
 #' @export
@@ -152,9 +151,8 @@ sample.g_copula.nulls <- function(X, S, K, gamma_X.list_S, sigma_X.list_S, verbo
 #'
 #' @family sampling
 #'
-#' @details TBD
-#'
-#' @references TBD
+#' @references
+#' \insertRef{LZ-LJ:2020}{floodgate}
 #' @import stats
 #' @export
 cosuff.gaussian.nulls <- function(X, i2, n21, S, K, sigma_X.list_S, verbose = FALSE){
@@ -221,9 +219,9 @@ cosuff.gaussian.nulls <- function(X, i2, n21, S, K, sigma_X.list_S, verbose = FA
 #'
 #' @family sampling
 #'
-#' @details TBD
 #'
-#' @references TBD
+#' @references
+#' \insertRef{LZ-LJ:2020}{floodgate}
 #' @import stats
 #' @export
 cosuff.g_copula.nulls <- function(X, i2, n21, S, K, sigma_X.list_S, verbose = FALSE){

@@ -14,9 +14,6 @@
 #'
 #' @family utils
 #'
-#' @details TBD
-#'
-#' @references TBD
 #' @export
 compute.movi <- function(beta, Xmodel = "gaussian", Ydist = "gaussian",
                        sigma_X.list = NULL, X = NULL, nulls.list = NULL ){

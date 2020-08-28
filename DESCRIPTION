@@ -26,9 +26,12 @@ Suggests:
     knitr,
     rmarkdown,
     covr,
-    spelling
+    spelling,
+    ggplot2
 Imports:
-  SNPknock
+  SNPknock,
+  Rdpack
+RdMacros: Rdpack
 Depends: 
      R (>= 3.5.0)
 VignetteBuilder: knitr

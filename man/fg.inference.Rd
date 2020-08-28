@@ -46,8 +46,8 @@ S: a list of selected variables.
 \description{
 This function produces floodgate LCBs for given fitted mu.
 }
-\details{
-TBD
+\references{
+\insertRef{LZ-LJ:2020}{floodgate}
 }
 \seealso{
 Other methods: 

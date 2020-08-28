@@ -36,8 +36,8 @@ A vector of length |S|, whose element is the expected conditional variance term 
 \description{
 This function calculates the expected conditional variance term Var(Xj |X-j)
 }
-\details{
-TBD
+\references{
+\insertRef{LZ-LJ:2020}{floodgate}
 }
 \seealso{
 Other methods: 

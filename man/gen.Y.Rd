@@ -26,9 +26,6 @@ use "laplace" to specify a linear model with laplacian noises,
 use "binom" to specifiy a logistic model, with Y taking values in \{-1,1\},
 use "poisson" to specify a log-poisson model.
 }
-\references{
-TBD
-}
 \seealso{
 Other models: 
 \code{\link{Genotypes.parm}()},

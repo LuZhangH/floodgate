@@ -35,11 +35,8 @@ A list of two objects. out: the fitted model from train.fun; S: a list of select
 \description{
 This function fits a model on the training data for a given alogorithm.
 }
-\details{
-TBD
-}
 \references{
-TBD
+\insertRef{LZ-LJ:2020}{floodgate}
 }
 \seealso{
 Other methods: 

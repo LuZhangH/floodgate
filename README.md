@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# floodgate
+# Floodgate
 
 The goal of floodgate is to provide inference on model-free variable
 importance.
@@ -14,3 +14,9 @@ You can install the development version of floodgate from
 ``` r
 devtools::install_github("LuZhangH/floodgate")
 ```
+
+## References
+
+Zhang, Lu, and Lucas Janson. “Floodgate: inference for model-free
+variable importance.” arXiv preprint
+[arXiv:2007.01283](https://arxiv.org/abs/2007.01283) (2020).
